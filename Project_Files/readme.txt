@@ -1,0 +1,1 @@
+This was a js refresher exersise to grasp the basics before I started learnign and working on the jsx elements. 

@@ -1,0 +1,68 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #edf3ff;
+  background: #0a1020;
+  font-synthesis: none;
+  line-height: 1.5;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button { font: inherit; }
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #28334b;
+}
+
+.app-header h1 { margin: 0; font-size: 1.25rem; letter-spacing: -0.04em; }
+.app-header h1 span { color: #acbad2; font-size: 0.875rem; font-weight: 400; letter-spacing: normal; }
+.demo-label { color: #acbad2; font-size: 0.875rem; }
+.graph { flex: 1; min-height: 0; }
+.react-flow { --xy-background-color: #0a1020; }
+
+.song-node {
+  width: 240px;
+  padding: 1.25rem;
+  border: 1px solid #6d96e8;
+  border-radius: 50px;
+  background: #14213a;
+  box-shadow: 0 0 40px #4a7eee24;
+}
+
+.song-genre { color: #a9c6ff; font-size: 0.875rem; }
+.song-node h2 { margin: 0.5rem 0 0.25rem; font-size: 1.25rem; }
+.song-node p { margin: 0; }
+.song-node .song-album { margin-top: 0.75rem; color: #acbad2; font-size: 0.875rem; }
+.react-flow__node.selected .song-node { border-color: #d4e3ff; box-shadow: 0 0 0 2px #7da9ff, 0 0 40px #4a7eee36; }
+.react-flow__node:focus-visible { outline: 2px solid #d4e3ff; outline-offset: 5px; border-radius: 50px; }
+
+.fit-web {
+  padding: 0.6rem 1rem;
+  border: 1px solid #465a7d;
+  border-radius: 8px;
+  color: #edf3ff;
+  background: #18263d;
+  cursor: pointer;
+}
+
+.fit-web:hover { background: #253958; }
+.fit-web:focus-visible { outline: 2px solid #a9c6ff; outline-offset: 3px; }
+.map-hint { max-width: calc(100% - 7rem); color: #acbad2; font-size: 0.875rem; text-align: center; pointer-events: none; }
+
+@media (max-width: 480px) {
+  .app-header { padding: 0.875rem 1rem; }
+  .app-header h1 span { display: none; }
+}
