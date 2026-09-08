@@ -4,7 +4,7 @@ A music discovery app built around an interactive graph. The current foundation 
 
 ## Run locally
 
-Install Node.js compatible with Vite, then run from this repository:
+Install Node.js, then run from this repository:
 
 ```sh
 npm install
