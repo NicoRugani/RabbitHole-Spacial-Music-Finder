@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open the local address printed in the terminal. React development now uses Vite; the original vanilla exercises can still be opened with Live Server.
+Open the local address printed in the terminal. 
 
 ```sh
 npm run build
@@ -25,7 +25,7 @@ These commands build the production files into `dist/` and preview that build lo
 - `src/main.jsx` mounts React into the root element in `index.html`.
 - `src/App.jsx` wraps the first song in a React Flow node with an ID, position, and data. `SongNode` renders that data as a card; `useNodesState` tracks changes such as dragging.
 - `src/styles.css` styles the graph and song card.
-- `Project_Files/` preserves the vanilla JavaScript exercises. The graph imports the original `songs.js` data from there.
+- `Project_Files/`  The graph imports the original `songs.js` data from there.
 
 React manages what appears on screen. React Flow supplies the interactive graph surface. Vite runs the development server and creates the production build.
 
