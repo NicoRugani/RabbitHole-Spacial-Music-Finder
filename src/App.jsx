@@ -1,8 +1,11 @@
+
+// loads tools and prepairs the first songs graph data for react flow to render.
 import {
   Background,
   Controls,
   Panel,
   ReactFlow,
+  // functions
   useNodesState,
   useReactFlow,
 } from '@xyflow/react';
@@ -30,9 +33,13 @@ function SongNode({ data }) {
 }
 
 // Keep this mapping outside App so its identity stays stable between renders.
+// creates an object
+// song is the property name, SongNode is the function stored and its value. React Flow will use this mapping to render the correct node type.
 const nodeTypes = { song: SongNode };
 const fitViewOptions = { padding: 0.4, maxZoom: 1 };
 
+
+// FitWebButton is a button that when clicked, will fit the entire graph into the view.
 function FitWebButton() {
   const { fitView } = useReactFlow();
 
@@ -46,6 +53,7 @@ function FitWebButton() {
   );
 }
 
+// App is the main component that renders the entire application. 
 export default function App() {
   // onNodesChange keeps React's node data in sync when a node is dragged.
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
@@ -56,6 +64,7 @@ export default function App() {
         <h1>RabbitHole<span> / music map</span></h1>
         <span className="demo-label">Sample songs</span>
       </header>
+      // 
       <section className="graph" aria-label="Interactive music map">
         <ReactFlow
           nodes={nodes}
