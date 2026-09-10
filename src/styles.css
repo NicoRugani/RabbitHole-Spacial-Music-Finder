@@ -34,12 +34,17 @@ button { font: inherit; }
 .react-flow { --xy-background-color: #0a1020; }
 
 .song-node {
-  width: 240px;
+  width: 200px;
+  height: 200px;
   padding: 1.25rem;
   border: 1px solid #6d96e8;
-  border-radius: 50px;
+  border-radius: 80%;
   background: #14213a;
   box-shadow: 0 0 40px #4a7eee24;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .song-genre { color: #a9c6ff; font-size: 0.875rem; }
@@ -47,7 +52,81 @@ button { font: inherit; }
 .song-node p { margin: 0; }
 .song-node .song-album { margin-top: 0.75rem; color: #acbad2; font-size: 0.875rem; }
 .react-flow__node.selected .song-node { border-color: #d4e3ff; box-shadow: 0 0 0 2px #7da9ff, 0 0 40px #4a7eee36; }
+.song-node:hover { border-color: #7da9ff; box-shadow: 0 0 60px #4a7eee36; size: 2; transition: all 0.2s ease-in-out; }
 .react-flow__node:focus-visible { outline: 2px solid #d4e3ff; outline-offset: 5px; border-radius: 50px; }
+
+.song-info {
+  max-width: 260px;
+  padding: 1rem;
+  background: #14213a;
+  color: #edf3ff;
+  border: 1px solid #6d96e8;
+  border-radius: 12px;
+}
+
+.song-info h2 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.song-info p {
+  margin: 0.25rem 0;
+}
+
+.recommendation-list li {
+  margin: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deselect-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ff0000;
+  border-radius: 8px;
+  color: #edf3ff;
+  background: #18263d;
+  cursor: pointer;
+}
+.find-recommendations-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #00ff00;
+  border-radius: 8px;
+  color: #edf3ff;
+  background: #18263d;
+  cursor: pointer;
+  margin: 1rem 0;
+}
+.add-to-graph-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #00eeff;
+  border-radius: 8px;
+  color: #edf3ff;
+  background: #18263d;
+  cursor: pointer;
+}
+button{
+  padding: 0.5rem 1rem;
+  border: 1px solid #465a7d;
+  border-radius: 8px;
+  color: #edf3ff;
+  background: #18263d;
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
+
+button:hover { 
+  scale: 1.05;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
+
+button:active {
+  scale: 0.95;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
+
 
 .fit-web {
   padding: 0.6rem 1rem;

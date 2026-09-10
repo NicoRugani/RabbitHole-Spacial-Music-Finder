@@ -4,11 +4,15 @@ import {
   Background,
   Controls,
   Panel,
+  useEdgesState,
+  Handle,
+  Position,
   ReactFlow,
   // functions
   useNodesState,
   useReactFlow,
 } from '@xyflow/react';
+import {useState} from 'react';
 import { songs } from '../Project_Files/songs.js';
 
 // React Flow adds a position and graph identity around our existing song data.
@@ -24,6 +28,8 @@ const initialNodes = [
 function SongNode({ data }) {
   return (
     <article className="song-node">
+      <Handle type="target" position={Position.Left} />
+      <Handle type="source" position={Position.Right} />
       <span className="song-genre">{data.genre}</span>
       <h2>{data.title}</h2>
       <p>{data.artist}</p>
@@ -54,9 +60,75 @@ function FitWebButton() {
 }
 
 // App is the main component that renders the entire application. 
-export default function App() {
-  // onNodesChange keeps React's node data in sync when a node is dragged.
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+
+// defines app and makes it the files default export.
+export default function App() { 
+  const [songNodes, setSongNodes, onNodesChange] = useNodesState(initialNodes);// uses state to remember the current nodes.
+  const [selectedSong, setSelectedSong] = useState(null); //uses state to remember the currently selected song.
+
+
+  function handleNodeClick(event, node){
+    setSelectedSong(node.data); //updates the state and requests a re-render of the app.
+    setShowRecommendations(false); // hides the recommendations panel when a new song is selected.
+  }
+
+  const recommendations = selectedSong // gets 3 songs that are not currently in the graph
+    ? songs
+    .filter(song =>
+      !songNodes.some(node=>node.data.id === song.id) //.some checks if any node in the graph has the same id as the song being checked. 
+    ).slice(0, 3)
+    : []; 
+
+  function handleDeselect(){
+    setSelectedSong(null);
+    setShowRecommendations(false);
+    setSongNodes(currentNodes => currentNodes.map(node => ({ ...node, selected: false }))); //sets all nodes to unselected.
+    
+  }
+
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState([]); 
+
+  function handleAddtoGraph(song){
+    const sourceNode = songNodes.find(node => node.data.id === selectedSong?.id); // find the source node
+
+    const alreadyAdded = songNodes.some(node => node.data.id === song.id); // check if the song is already in the graph
+
+    if(!sourceNode || alreadyAdded) return; // if no source node or song is already in the graph, do nothing
+
+    const branchCount = songEdges.filter(edge => edge.source === sourceNode.id).length; // count how many edges are already connected to the source node
+
+    const newNode = {
+      id: String(song.id),
+      type: 'song',
+      position: {
+        x: sourceNode.position.x + 350, // position the new node to the right of the source node
+        y: sourceNode.position.y + branchCount * 250, // stagger the new nodes vertically based on how many edges are already connected
+      },
+      data: song,
+    };
+
+    const newEdge = {
+      id: `edge-${sourceNode.id}-${newNode.id}`, // create a unique id for the new edge
+      source: sourceNode.id,
+      target: newNode.id,
+    };
+
+    setSongNodes(currentNodes => [ // add the new node to the graph
+      ...currentNodes.map(node => ({
+        ...node,
+        selected: false, // unselect all nodes when a new node is added
+      })),
+      {...newNode, selected: true}, // select the new node when it is added
+    ]);
+
+    setSongEdges(currentEdges => [...currentEdges, newEdge]); // add the new edge to the graph
+    setSelectedSong(song);
+    setShowRecommendations(false); 
+
+
+  }
+    
 
   return (
     <main className="app">
@@ -64,26 +136,75 @@ export default function App() {
         <h1>RabbitHole<span> / music map</span></h1>
         <span className="demo-label">Sample songs</span>
       </header>
-      // 
       <section className="graph" aria-label="Interactive music map">
         <ReactFlow
-          nodes={nodes}
+          nodes={songNodes}
           nodeTypes={nodeTypes}
           onNodesChange={onNodesChange}
-          nodesConnectable={false}
-          deleteKeyCode={null}
-          minZoom={0.2}
+          nodesConnectable={false}//disables the ablity to draw new edges between nodes. 
+          deleteKeyCode={null} //disables the ability to delete nodes with the delete key.
+          minZoom={0.2} //min and max zoom levels for the graph.
           maxZoom={2}
-          fitView
-          fitViewOptions={fitViewOptions}
-          colorMode="dark"
+          fitView // automatically zooms and pans the graph to fit all nodes in view.
+          fitViewOptions={fitViewOptions}// padding and fitting options for the fitView function.
+          colorMode="system"
+          onNodeClick={handleNodeClick}
+          onPaneClick={handleDeselect} //deselects the currently selected song when the user clicks on the background of the graph.
+          edges = {songEdges}
+          onEdgesChange = {onEdgesChange}
         >
-          <Background color="#34445f" gap={28} size={1} />
+          <Background color="#34445f" gap={28} size={2} />
           <Controls showInteractive={false} showFitView={false} />
-          <Panel position="top-right"><FitWebButton /></Panel>
+          <Panel position="bottom-right"><FitWebButton /></Panel>
           <Panel position="bottom-center" className="map-hint">
             Drag the map to explore · Scroll to zoom · Drag a song to move it
           </Panel>
+
+          
+          <Panel position = "top-right">
+            <aside className="song-info">
+              <h2>Selected song</h2>
+              {selectedSong ? (
+                <>
+                  <p>{selectedSong.title}</p>
+                  <p>{selectedSong.artist}</p>
+                  <p>{selectedSong.album} · {selectedSong.year}</p>
+                  <p className="song-genre">{selectedSong.genre}</p>
+                  <br />
+                  <button className ="deselect-button" onClick={handleDeselect}>Deselect</button>
+                  <button className="find-recommendations-button" onClick = {() => setShowRecommendations(true)}>Find Recommendations</button>
+                </>
+              ) : (
+                <p>Click a song to view its details</p>
+              )}
+            </aside>
+          </Panel>
+
+
+          {showRecommendations && selectedSong && (
+            <Panel position="top-left">
+              <aside className="song-info">
+                <h2>Recommendations</h2>
+                
+                <ul className ="recommendations-list">
+
+                  {recommendations.length === 0 ? (
+                    <li>No recommendations available</li>
+                  ) : (
+                    recommendations.map(song => (
+                      <li key={song.id}>
+                        {song.title} by {song.artist} ({song.year})
+                        <button className="add-to-graph-button" onClick = {() => handleAddtoGraph(song)}>Add to Graph</button>
+                      </li>
+                    ))
+                  )}
+                  
+                </ul>
+              </aside>
+            </Panel>
+          )}
+
+
         </ReactFlow>
       </section>
     </main>
