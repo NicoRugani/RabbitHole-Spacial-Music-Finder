@@ -183,17 +183,17 @@ export default function App() {
             </aside>
 
 
-          {showRecommendations && selectedSong && (
+          {showRecommendations && selectedSong && ( // only show reccomendations if a song is selected and the "Find Reccomendations button" has been clicked.
               <aside className="song-info">
                 <h2>Recommendations</h2>
                 
                 <ul className ="recommendations-list">
 
-                  {recommendations.length === 0 ? (
-                    <li>No recommendations available</li>
+                  {recommendations.length === 0 ? ( //check if reccomendations is empty
+                    <li>No recommendations available</li> 
                   ) : (
                     recommendations.map(song => (
-                      <li key={song.id}>
+                      <li key={song.id}> 
                         <span>{song.title} by {song.artist} ({song.year})</span>
                         <button className="add-to-graph-button" onClick = {() => handleAddtoGraph(song)}>Add to Graph</button>
                       </li>
