@@ -136,7 +136,8 @@ export default function App() {
         <h1>RabbitHole<span> / music map</span></h1>
         <span className="demo-label">Sample songs</span>
       </header>
-      <section className="graph" aria-label="Interactive music map">
+      <div className="workspace">
+        <section className="graph" aria-label="Interactive music map">
         <ReactFlow
           nodes={songNodes}
           nodeTypes={nodeTypes}
@@ -159,9 +160,10 @@ export default function App() {
           <Panel position="bottom-center" className="map-hint">
             Drag the map to explore · Scroll to zoom · Drag a song to move it
           </Panel>
+        </ReactFlow>
+        </section>
 
-          
-          <Panel position = "top-right">
+        <div className="sidebar">
             <aside className="song-info">
               <h2>Selected song</h2>
               {selectedSong ? (
@@ -170,19 +172,18 @@ export default function App() {
                   <p>{selectedSong.artist}</p>
                   <p>{selectedSong.album} · {selectedSong.year}</p>
                   <p className="song-genre">{selectedSong.genre}</p>
-                  <br />
-                  <button className ="deselect-button" onClick={handleDeselect}>Deselect</button>
-                  <button className="find-recommendations-button" onClick = {() => setShowRecommendations(true)}>Find Recommendations</button>
+                  <div className="song-actions">
+                    <button className ="deselect-button" onClick={handleDeselect}>Deselect</button>
+                    <button className="find-recommendations-button" onClick = {() => setShowRecommendations(true)}>Find Recommendations</button>
+                  </div>
                 </>
               ) : (
                 <p>Click a song to view its details</p>
               )}
             </aside>
-          </Panel>
 
 
           {showRecommendations && selectedSong && (
-            <Panel position="top-left">
               <aside className="song-info">
                 <h2>Recommendations</h2>
                 
@@ -193,7 +194,7 @@ export default function App() {
                   ) : (
                     recommendations.map(song => (
                       <li key={song.id}>
-                        {song.title} by {song.artist} ({song.year})
+                        <span>{song.title} by {song.artist} ({song.year})</span>
                         <button className="add-to-graph-button" onClick = {() => handleAddtoGraph(song)}>Add to Graph</button>
                       </li>
                     ))
@@ -201,12 +202,9 @@ export default function App() {
                   
                 </ul>
               </aside>
-            </Panel>
           )}
-
-
-        </ReactFlow>
-      </section>
+        </div>
+      </div>
     </main>
   );
 }
