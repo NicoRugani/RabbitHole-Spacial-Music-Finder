@@ -2,6 +2,14 @@
 
 A music discovery app built around an interactive graph. The current foundation displays one placeholder song with dragging, panning, zooming, and a **Fit Web** control.
 
+## Current In Progress Screen Shots
+
+<img width="1785" height="995" alt="Screenshot 2026-09-10 at 8 15 09 AM" src="https://github.com/user-attachments/assets/6d15327d-a241-4a36-a41f-fd74560335b7" />
+<img width="1785" height="995" alt="Screenshot 2026-09-10 at 8 15 21 AM" src="https://github.com/user-attachments/assets/7aff5a1b-b3ee-4a9a-8984-81c25d22df26" />
+<img width="1785" height="995" alt="Screenshot 2026-09-10 at 8 15 51 AM" src="https://github.com/user-attachments/assets/32250042-9625-4a72-b2fb-02509d2bdf7c" />
+
+
+
 ## Run locally
 
 Install Node.js, then run from this repository:
