@@ -74,7 +74,7 @@ button { font: inherit; }
 .song-node p { margin: 0; }
 .song-node .song-album { margin-top: 0.75rem; color: #acbad2; font-size: 0.875rem; }
 .react-flow__node.selected .song-node { border-color: #d4e3ff; box-shadow: 0 0 0 2px #7da9ff, 0 0 40px #4a7eee36; }
-.song-node:hover { border-color: #7da9ff; box-shadow: 0 0 60px #4a7eee36; size: 2; transition: all 0.2s ease-in-out; }
+.song-node:hover { border-color: #7da9ff; box-shadow: 0 0 60px #4a7eee36; scale: 1.05; transition: all 0.2s ease-in-out; }
 .react-flow__node:focus-visible { outline: 2px solid #d4e3ff; outline-offset: 5px; border-radius: 50px; }
 
 .song-info {
@@ -143,7 +143,6 @@ button { font: inherit; }
 .song-library-list button {
     width: 100%;
     margin: 0.5rem 0;
-    text-align: left;
     overflow-wrap: anywhere;
     text-align: center;
     display: flex;

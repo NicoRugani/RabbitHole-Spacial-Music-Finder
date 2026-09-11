@@ -101,8 +101,9 @@ const [startingGraph] = useState(() => {
   const [ saveError, setSaveError] = useState(null);
 
   const [songNodes, setSongNodes, onNodesChange] = useNodesState(startingGraph.nodes);// uses state to remember the current nodes.
-  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState(startingGraph.edges);; 
-  const [selectedSong, setSelectedSong] = useState(null); //uses state to remember the currently selected song.
+  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState(startingGraph.edges); 
+  const selectedNode = songNodes.find(node => node.selected); //returns first node thats sleected = true
+  const selectedSong = selectedNode?.data;
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const graphSectionRef = useRef(null);
@@ -121,15 +122,13 @@ const [startingGraph] = useState(() => {
 
 
   function handleNodeClick(event, node){
-    setSelectedSong(node.data); //updates the state and requests a re-render of the app.
     setShowRecommendations(false); // hides the recommendations panel when a new song is selected.
   }
 
   function handleLibrarySelect(nodeId){
     const targetNode = songNodes.find(node => node.id === nodeId);
-    if(!targetNode || !reactFlowInstance) return;
+    if(!targetNode || !reactFlowInstance) return; 
 
-    setSelectedSong(targetNode.data);
     setShowRecommendations(false);
 
     setSongNodes(currentNodes =>
@@ -139,7 +138,7 @@ const [startingGraph] = useState(() => {
       }))
     );
 
-    graphSectionRef.current?.scrollIntoView({
+    graphSectionRef.current?.scrollIntoView({ //
       behavior: 'smooth',
       block: 'nearest',
     });
@@ -160,14 +159,13 @@ const [startingGraph] = useState(() => {
     : []; 
 
   function handleDeselect(){
-    setSelectedSong(null);
     setShowRecommendations(false);
     setSongNodes(currentNodes => currentNodes.map(node => ({ ...node, selected: false }))); //sets all nodes to unselected.
     
   }
 
   function handleAddtoGraph(song){
-    const sourceNode = songNodes.find(node => node.data.id === selectedSong?.id); // find the source node
+    const sourceNode = selectedNode; // find the source node
 
     const alreadyAdded = songNodes.some(node => node.data.id === song.id); // check if the song is already in the graph
 
@@ -201,10 +199,16 @@ const [startingGraph] = useState(() => {
     ]);
 
     setSongEdges(currentEdges => [...currentEdges, newEdge]); // add the new edge to the graph
-    setSelectedSong(song);
     setShowRecommendations(false); 
-
-
+    // Camera pans to the new node when it is added to the graph.
+    if(reactFlowInstance){
+      reactFlowInstance.fitView({
+        nodes: [{id: newNode.id}],
+        padding: 0.4,
+        maxZoom: 1,
+        duration: 650,
+      });
+    }
   }
 
   function handleStartOver(){
@@ -215,7 +219,6 @@ const [startingGraph] = useState(() => {
       } else {
         setSongNodes(initialNodes);
         setSongEdges([]);
-        setSelectedSong(null);
         setShowRecommendations(false);
         setSaveError(null);
         setLoadError(null);
@@ -250,6 +253,8 @@ const [startingGraph] = useState(() => {
           edges = {songEdges}
           onEdgesChange = {onEdgesChange}
           onInit={setReactFlowInstance}
+          multiSelectionKeyCode={null} 
+          selectionKeyCode = {null} 
         >
           <Background color="#34445f" gap={28} size={2} />
           <Controls showInteractive={false} showFitView={false} />
