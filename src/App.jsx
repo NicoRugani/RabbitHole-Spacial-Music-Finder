@@ -69,7 +69,7 @@ export default function App() {
 
 const [startingGraph] = useState(() => {
     try {
-      const savedGraphData = loadGraphData();
+      const savedGraph = loadGraphData();
 
       return {
         nodes: savedGraph
@@ -81,6 +81,8 @@ const [startingGraph] = useState(() => {
           ? savedGraph.edges.map(edge => ({ ...edge, selected: false }))
           // No saved edges, so start with an empty list.
           : [],
+
+      loadError: null,
       };
     } catch {
       // If anything above throws (e.g. corrupted storage), return a safe
@@ -94,9 +96,11 @@ const [startingGraph] = useState(() => {
   });
 
 
+  const [loadError, setLoadError] = useState(startingGraph.loadError);
+  const [ saveError, setSaveError] = useState(null);
 
   const [songNodes, setSongNodes, onNodesChange] = useNodesState(startingGraph.nodes);// uses state to remember the current nodes.
-  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState([]); 
+  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState(startingGraph.edges);; 
   const [selectedSong, setSelectedSong] = useState(null); //uses state to remember the currently selected song.
   const [showRecommendations, setShowRecommendations] = useState(false);
 
@@ -151,19 +155,6 @@ const [startingGraph] = useState(() => {
       data: song,
     };
 
-    function handleStartOver(){
-      if(!window.confirm('Start over? This will clear your current graph.')) return;
-
-      if(!saveGraphData(initialNodes, [])){
-        setSaveError('Your graph could not be cleared.');
-      } else {
-        setSongNodes(initialNodes);
-        setSongEdges([]);
-        setSelectedSong(null);
-        setShowRecommendations(false);
-        setSaveError(null);
-      }
-    }
 
     const newEdge = {
       id: `edge-${sourceNode.id}-${newNode.id}`, // create a unique id for the new edge
@@ -185,6 +176,20 @@ const [startingGraph] = useState(() => {
 
 
   }
+
+  function handleStartOver(){
+      if(!window.confirm('Start over? This will clear your current graph.')) return;
+
+      if(!saveGraphData(initialNodes, [])){
+        setSaveError('Your graph could not be cleared.');
+      } else {
+        setSongNodes(initialNodes);
+        setSongEdges([]);
+        setSelectedSong(null);
+        setShowRecommendations(false);
+        setSaveError(null);
+      }
+    }
     
 
   return (
