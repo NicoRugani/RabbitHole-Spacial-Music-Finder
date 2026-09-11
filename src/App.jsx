@@ -12,10 +12,11 @@ import {
   useNodesState,
   useReactFlow,
 } from '@xyflow/react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { songs } from '../data/songs.js';
 import { saveGraphData, loadGraphData } from '../data/graphStorage.js';
 import SongDetails from './components/SongDetails.jsx';
+import SongLibrary from './components/SongLibrary.jsx';
 import Recommendations from './components/Recommendations.jsx';
 
 // React Flow adds a position and graph identity around our existing song data.
@@ -103,6 +104,8 @@ const [startingGraph] = useState(() => {
   const [songEdges, setSongEdges, onEdgesChange] = useEdgesState(startingGraph.edges);; 
   const [selectedSong, setSelectedSong] = useState(null); //uses state to remember the currently selected song.
   const [showRecommendations, setShowRecommendations] = useState(false);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const graphSectionRef = useRef(null);
 
   useEffect(() => {
     if(loadError || songNodes.some(node => node.dragging)){
@@ -188,6 +191,7 @@ const [startingGraph] = useState(() => {
         setSelectedSong(null);
         setShowRecommendations(false);
         setSaveError(null);
+        setLoadError(null);
       }
     }
     
@@ -202,7 +206,7 @@ const [startingGraph] = useState(() => {
         <button onClick={handleStartOver}>Start Over</button>
       </header>
       <div className="workspace">
-        <section className="graph" aria-label="Interactive music map">
+        <section ref = {graphSectionRef} className="graph" aria-label="Interactive music map">
         <ReactFlow
           nodes={songNodes}
           nodeTypes={nodeTypes}
@@ -218,6 +222,7 @@ const [startingGraph] = useState(() => {
           onPaneClick={handleDeselect} //deselects the currently selected song when the user clicks on the background of the graph.
           edges = {songEdges}
           onEdgesChange = {onEdgesChange}
+          onInit={setReactFlowInstance}
         >
           <Background color="#34445f" gap={28} size={2} />
           <Controls showInteractive={false} showFitView={false} />
