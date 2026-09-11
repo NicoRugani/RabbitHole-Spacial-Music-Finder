@@ -125,6 +125,33 @@ const [startingGraph] = useState(() => {
     setShowRecommendations(false); // hides the recommendations panel when a new song is selected.
   }
 
+  function handleLibrarySelect(nodeId){
+    const targetNode = songNodes.find(node => node.id === nodeID);
+    if(!tartgetNode || !reactFlowINstance) return;
+
+    setSelectedSong(tartgetNode.data);
+    setShowRecommendations(false);
+
+    setSongNodes(currentNodes =>
+      currentNodes.map(node => ({
+        ...node,
+        selected: node.id === nodeId, // sets the selected property of the clicked node to true and all others to false.
+      }))
+    );
+
+    graphSectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    });
+
+    reactFlowInstance.fitView({
+      nodes: [{id: nodeId}],
+      padding: 0.4,
+      maxZoom: 1,
+      duration: 650,
+    });
+  }  
+
   const recommendations = selectedSong // gets 3 songs that are not currently in the graph
     ? songs
     .filter(song =>
@@ -246,8 +273,15 @@ const [startingGraph] = useState(() => {
               onAddToGraph={handleAddtoGraph}
             />
           )}
+          <SongLibrary
+            nodes={songNodes}
+            selectedSongId={selectedSong?.id}
+            onSelect={handleLibrarySelect}
+            disabled={!reactFlowInstance} 
+          />
         </div>
       </div>
     </main>
   );
 }
+

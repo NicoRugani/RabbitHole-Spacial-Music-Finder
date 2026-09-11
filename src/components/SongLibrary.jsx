@@ -1,7 +1,7 @@
 export default function SongLibrary({
     nodes, 
     selectedSongId, 
-    onSelectSong,
+    onSelect,
     disabled,   
 }){
     return (
