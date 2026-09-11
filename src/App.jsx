@@ -13,7 +13,9 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import {useState} from 'react';
-import { songs } from '../Project_Files/songs.js';
+import { songs } from '../data/songs.js';
+import SongDetails from './components/SongDetails.jsx';
+import Recommendations from './components/Recommendations.jsx';
 
 // React Flow adds a position and graph identity around our existing song data.
 const initialNodes = [
@@ -65,6 +67,7 @@ function FitWebButton() {
 export default function App() { 
   const [songNodes, setSongNodes, onNodesChange] = useNodesState(initialNodes);// uses state to remember the current nodes.
   const [selectedSong, setSelectedSong] = useState(null); //uses state to remember the currently selected song.
+
 
 
   function handleNodeClick(event, node){
@@ -164,44 +167,17 @@ export default function App() {
         </section>
 
         <div className="sidebar">
-            <aside className="song-info">
-              <h2>Selected song</h2>
-              {selectedSong ? (
-                <>
-                  <p>{selectedSong.title}</p>
-                  <p>{selectedSong.artist}</p>
-                  <p>{selectedSong.album} · {selectedSong.year}</p>
-                  <p className="song-genre">{selectedSong.genre}</p>
-                  <div className="song-actions">
-                    <button className ="deselect-button" onClick={handleDeselect}>Deselect</button>
-                    <button className="find-recommendations-button" onClick = {() => setShowRecommendations(true)}>Find Recommendations</button>
-                  </div>
-                </>
-              ) : (
-                <p>Click a song to view its details</p>
-              )}
-            </aside>
+          <SongDetails
+            song={selectedSong}
+            onDeselect={handleDeselect}
+            onFindRecommendations={() => setShowRecommendations(true)}
+          />
 
-
-          {showRecommendations && selectedSong && ( // only show reccomendations if a song is selected and the "Find Reccomendations button" has been clicked.
-              <aside className="song-info">
-                <h2>Recommendations</h2>
-                
-                <ul className ="recommendations-list">
-
-                  {recommendations.length === 0 ? ( //check if reccomendations is empty
-                    <li>No recommendations available</li> 
-                  ) : (
-                    recommendations.map(song => (
-                      <li key={song.id}> 
-                        <span>{song.title} by {song.artist} ({song.year})</span>
-                        <button className="add-to-graph-button" onClick = {() => handleAddtoGraph(song)}>Add to Graph</button>
-                      </li>
-                    ))
-                  )}
-                  
-                </ul>
-              </aside>
+          {showRecommendations && selectedSong && ( // only show recommendations after the user requests them for a selected song.
+            <Recommendations
+              songs={recommendations}
+              onAddToGraph={handleAddtoGraph}
+            />
           )}
         </div>
       </div>
