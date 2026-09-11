@@ -126,10 +126,10 @@ const [startingGraph] = useState(() => {
   }
 
   function handleLibrarySelect(nodeId){
-    const targetNode = songNodes.find(node => node.id === nodeID);
-    if(!tartgetNode || !reactFlowINstance) return;
+    const targetNode = songNodes.find(node => node.id === nodeId);
+    if(!targetNode || !reactFlowInstance) return;
 
-    setSelectedSong(tartgetNode.data);
+    setSelectedSong(targetNode.data);
     setShowRecommendations(false);
 
     setSongNodes(currentNodes =>
