@@ -21,7 +21,6 @@ export function loadGraphData(){
         const graphData = JSON.parse(savedGraphData);
 
         if(graphData === null || graphData.version !== 1 || !Array.isArray(graphData.nodes) || !Array.isArray(graphData.edges)) {
-            console.error('Error loading graph data: Invalid format');
             throw new Error('Invalid graph data format');
         }
         return graphData;

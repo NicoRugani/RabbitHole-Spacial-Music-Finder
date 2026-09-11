@@ -12,8 +12,9 @@ import {
   useNodesState,
   useReactFlow,
 } from '@xyflow/react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import { songs } from '../data/songs.js';
+import { saveGraphData, loadGraphData } from '../data/graphStorage.js';
 import SongDetails from './components/SongDetails.jsx';
 import Recommendations from './components/Recommendations.jsx';
 
@@ -65,8 +66,50 @@ function FitWebButton() {
 
 // defines app and makes it the files default export.
 export default function App() { 
-  const [songNodes, setSongNodes, onNodesChange] = useNodesState(initialNodes);// uses state to remember the current nodes.
+
+const [startingGraph] = useState(() => {
+    try {
+      const savedGraphData = loadGraphData();
+
+      return {
+        nodes: savedGraph
+          ? savedGraph.nodes.map(node => ({ ...node, selected: false, dragging: false }))
+          // If there's no saved data, fall back to the initial placeholder nodes.
+          : initialNodes,
+        // Same idea for edges: copy saved edges and add a "selected" flag.
+        edges: savedGraph
+          ? savedGraph.edges.map(edge => ({ ...edge, selected: false }))
+          // No saved edges, so start with an empty list.
+          : [],
+      };
+    } catch {
+      // If anything above throws (e.g. corrupted storage), return a safe
+      // empty graph plus an error message so the UI can warn the user.
+      return {
+        nodes: [],
+        edges: [],
+        loadError: 'Your saved graph could not be loaded. Saving is paused.'
+      };
+    }
+  });
+
+
+
+  const [songNodes, setSongNodes, onNodesChange] = useNodesState(startingGraph.nodes);// uses state to remember the current nodes.
+  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState([]); 
   const [selectedSong, setSelectedSong] = useState(null); //uses state to remember the currently selected song.
+  const [showRecommendations, setShowRecommendations] = useState(false);
+
+  useEffect(() => {
+    if(loadError || songNodes.some(node => node.dragging)){
+      return;
+    }
+    const saved = saveGraphData(songNodes, songEdges);
+
+    setSaveError(
+      saved ? null : 'your graph could not be saved.'
+    );
+  }, [songNodes, songEdges, loadError]);
 
 
 
@@ -89,9 +132,6 @@ export default function App() {
     
   }
 
-  const [showRecommendations, setShowRecommendations] = useState(false);
-  const [songEdges, setSongEdges, onEdgesChange] = useEdgesState([]); 
-
   function handleAddtoGraph(song){
     const sourceNode = songNodes.find(node => node.data.id === selectedSong?.id); // find the source node
 
@@ -110,6 +150,20 @@ export default function App() {
       },
       data: song,
     };
+
+    function handleStartOver(){
+      if(!window.confirm('Start over? This will clear your current graph.')) return;
+
+      if(!saveGraphData(initialNodes, [])){
+        setSaveError('Your graph could not be cleared.');
+      } else {
+        setSongNodes(initialNodes);
+        setSongEdges([]);
+        setSelectedSong(null);
+        setShowRecommendations(false);
+        setSaveError(null);
+      }
+    }
 
     const newEdge = {
       id: `edge-${sourceNode.id}-${newNode.id}`, // create a unique id for the new edge
@@ -136,8 +190,11 @@ export default function App() {
   return (
     <main className="app">
       <header className="app-header">
+        {loadError && <p role = "alert">{loadError}</p>}
+        {saveError && <p role = "alert">{saveError}</p>}
         <h1>RabbitHole<span> / music map</span></h1>
         <span className="demo-label">Sample songs</span>
+        <button onClick={handleStartOver}>Start Over</button>
       </header>
       <div className="workspace">
         <section className="graph" aria-label="Interactive music map">
