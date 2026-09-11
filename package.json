@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "server" : "node --watch server/index.js"
   },
   "dependencies": {
     "@xyflow/react": "12.11.6",
+    "express": "5.2.1",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
