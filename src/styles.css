@@ -142,9 +142,22 @@ button { font: inherit; }
 
 .song-library-list button {
     width: 100%;
-    margin: 0;
+    margin: 0.5rem 0;
     text-align: left;
     overflow-wrap: anywhere;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.song-library-list button:hover {
+    background: #253958;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease-in-out;
+}
+.song-library-list button:active {
+    background: #253958;
+    scale: 0.95;
+    transition: all 0.2s ease-in-out;
 }
 
 .song-library-list button[aria-current="true"] {
@@ -160,6 +173,17 @@ button { font: inherit; }
   background: #18263d;
   cursor: pointer;
 }
+.deselect-button:hover{
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
+.deselect-button:active {
+  scale: 0.95;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
+
 .find-recommendations-button {
   padding: 0.5rem 1rem;
   border: 1px solid #00ff00;
@@ -169,13 +193,33 @@ button { font: inherit; }
   cursor: pointer;
   margin: 1rem 0;
 }
+.find-recommendations-button:hover{
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
+.find-recommendations-button:active {
+  scale: 0.95;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
 .add-to-graph-button {
   padding: 0.5rem 1rem;
-  border: 1px solid #00eeff;
+  border: 1px solid #7da9ff;
   border-radius: 8px;
   color: #edf3ff;
   background: #18263d;
   cursor: pointer;
+}
+.add-to-graph-button:hover{
+  scale: 1.05;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
+}
+.add-to-graph-button:active {
+  scale: 0.95;
+  transition: all 0.2s ease-in-out;
+  background: #1a293f; 
 }
 button{
   padding: 0.5rem 1rem;
@@ -187,17 +231,6 @@ button{
   margin: 0.5rem 0;
 }
 
-button:hover { 
-  scale: 1.05;
-  transition: all 0.2s ease-in-out;
-  background: #1a293f; 
-}
-
-button:active {
-  scale: 0.95;
-  transition: all 0.2s ease-in-out;
-  background: #1a293f; 
-}
 
 
 .fit-web {
