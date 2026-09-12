@@ -20,7 +20,7 @@ app.get("/api/songs/:id/recommendations", (req, res) => {
         return res.status(404).json({ error: "Song not found" });
     }
 
-    const excludeIds = req.query.excludeIds ? req.query.exclude.split(',').map(Number) : [];
+    const excludeIds = req.query.exclude ? req.query.exclude.split(',').map(Number) : [];
 
     res.json({recommendations: getRecommendations(source, songs, excludeIds)});
 });

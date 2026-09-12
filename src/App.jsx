@@ -109,6 +109,9 @@ const [startingGraph] = useState(() => {
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const graphSectionRef = useRef(null);
+  const [recommendations, setRecommendations] = useState([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+  const[recommendationsError, setRecommendationsError] = useState(null);
 
   useEffect(() => {
     if(loadError || songNodes.some(node => node.dragging)){
@@ -153,7 +156,7 @@ const [startingGraph] = useState(() => {
     });
   }  
 
-  const recommendations = [] // gets 3 songs that are not currently in the graph
+
 
 
   function handleDeselect(){
@@ -222,6 +225,31 @@ const [startingGraph] = useState(() => {
         setLoadError(null);
       }
     }
+
+    async function handleFindRecommendations(){
+      if(!selectedSong) return;
+      setShowRecommendations(true);
+      setRecommendationsError(null);
+      setRecommendationsLoading(true);
+
+      try{
+        const excludeIds = songNodes.map(node => node.data.id);
+        const response = await fetch(`/api/songs/${selectedSong.id}/recommendations?exclude=${excludeIds.join(',')}`); // builds the url: selectedSong.id = the id of the selected song, excludeIds.join(',') = a list of all the ids in the graph.
+
+        if(!response.ok){
+          throw new Error(`Server responded with ${response.status}`);
+        }
+
+        const data =  await response.json(); 
+        setRecommendations(data.recommendations);
+      } catch (error) {
+        console.error(error);
+        setRecommendationsError('failed to load recommendations.');
+        setRecommendations([]);
+      } finally {
+        setRecommendationsLoading(false);
+      }
+    }
     
 
   return (
@@ -267,12 +295,14 @@ const [startingGraph] = useState(() => {
           <SongDetails
             song={selectedSong}
             onDeselect={handleDeselect}
-            onFindRecommendations={() => setShowRecommendations(true)}
+            onFindRecommendations={handleFindRecommendations}
           />
 
           {showRecommendations && selectedSong && ( // only show recommendations after the user requests them for a selected song.
             <Recommendations
               songs={recommendations}
+              loading={recommendationsLoading}
+              error={recommendationsError}
               onAddToGraph={handleAddtoGraph}
             />
           )}
