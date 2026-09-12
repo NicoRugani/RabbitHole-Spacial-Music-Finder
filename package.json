@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "server" : "node --watch server/index.js"
+    "server" : "node --watch --env-file=.env server/index.js"
   },
   "dependencies": {
     "@xyflow/react": "12.11.6",

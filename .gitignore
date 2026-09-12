@@ -4,3 +4,4 @@ dist/
 *.local
 *.md
 !README.md
+.env

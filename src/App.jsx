@@ -13,8 +13,10 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import {useState, useEffect, useRef} from 'react';
-import { songs } from '../data/songs.js';
-import { saveGraphData, loadGraphData } from '../data/graphStorage.js';
+const startingSong = {id:1, title: 
+"Don't Stop Believin'", artist: "Journey", album: "Evolution", genre: "Rock", year: 1981
+}; // temorary placeholder song data to display first somng while working on real time song data implimentation.
+import { saveGraphData, loadGraphData } from './storage/graphStorage.js';
 import SongDetails from './components/SongDetails.jsx';
 import SongLibrary from './components/SongLibrary.jsx';
 import Recommendations from './components/Recommendations.jsx';
@@ -22,10 +24,10 @@ import Recommendations from './components/Recommendations.jsx';
 // React Flow adds a position and graph identity around our existing song data.
 const initialNodes = [
   {
-    id: String(songs[0].id),
+    id: String(startingSong.id),
     type: 'song',
     position: { x: 0, y: 0 },
-    data: songs[0],
+    data: startingSong,
   },
 ];
 
@@ -151,12 +153,8 @@ const [startingGraph] = useState(() => {
     });
   }  
 
-  const recommendations = selectedSong // gets 3 songs that are not currently in the graph
-    ? songs
-    .filter(song =>
-      !songNodes.some(node=>node.data.id === song.id) //.some checks if any node in the graph has the same id as the song being checked. 
-    ).slice(0, 3)
-    : []; 
+  const recommendations = [] // gets 3 songs that are not currently in the graph
+
 
   function handleDeselect(){
     setShowRecommendations(false);

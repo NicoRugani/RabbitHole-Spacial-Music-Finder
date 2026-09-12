@@ -7,4 +7,9 @@ import react from '@vitejs/plugin-react';
 // tells vite to enable and use the react plugin when building the project
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://127.0.0.1:3001',
+    },
+  },
 });
