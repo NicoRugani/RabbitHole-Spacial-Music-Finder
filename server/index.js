@@ -1,3 +1,5 @@
+// index.js: The main entry point for the RabbitHole API
+
 import express from 'express';
 import {songs} from './data/songs.js';
 import {getRecommendations} from './recommendations.js';
