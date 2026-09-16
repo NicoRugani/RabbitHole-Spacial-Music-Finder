@@ -3,6 +3,7 @@
 import express from 'express';
 import {songs} from './data/songs.js';
 import {getRecommendations} from './recommendations.js';
+import {getSimilarTracks} from './lastfm.js';
 
 const app = express();
 const PORT = 3001;
@@ -27,6 +28,16 @@ app.get("/api/songs/:id/recommendations", (req, res) => {
     res.json({recommendations: getRecommendations(source, songs, excludeIds)});
 });
 
+app.get("/api/debug/similar", async (req, res) =>{
+    try{
+        const tracks = await getSimilarTracks(req.query.artist, req.query.title);
+        res.json({count: tracks.length, tracks});
+    } catch(error){
+        res.status(502).json({error: error.message});
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`RabbitHole API listening on http://127.0.0.1:${PORT}`);
 })
+

@@ -59,7 +59,24 @@ export const songs = [{
     genre: "Rock",
     year: 1991   
     
-}];
+},
+{
+    id: 9,
+    title: "Lose Yourself",
+    artist: "Eminem",
+    album: "8 Mile",
+    genre: "Hip-Hop",
+    year: 2002
+},
+{
+    id: 10,
+    title: "Rolling in the Deep",
+    artist: "Adele",
+    album: "21",
+    genre: "Pop",
+    year: 2010
+}
+];
 
 
 
