@@ -53,9 +53,29 @@ export async function lookupSong(trackID){
 
 }
 
-export async function findSong(title, artist){
-    //call iTunes with SEARCH_URL
-    const data = await callItunes(SEARCH_URL, { term: `${title} ${artist}`, entity: 'song', limit: 1 });
-    const result = data.results.find(item => item.kind === 'song');
-    return result ? toSong(result) : null;
+//searches iTunes for the version of a song that matches what Last.fm named
+export async function findSong(artist, title){
+    const data = await callItunes(SEARCH_URL, { term: `${artist} ${title}`, entity: "song", limit: 10 });
+
+    const wantedTitle = normalizeTitle(title);
+    const wantedArtist = normalizeArtist(artist);
+
+    const match = (data.results ?? []).find(result => {
+        const resultTitle = normalizeTitle(result.trackName);
+        const resultArtist = normalizeArtist(result.artistName);
+
+        //an exact title after normalizing rejects live, remix and re-recorded versions
+        const titleMatches = resultTitle === wantedTitle;
+        //the trailing space keeps "Queen" from matching "Queensryche"
+        const artistMatches = resultArtist === wantedArtist || resultArtist.startsWith(`${wantedArtist} `);
+
+        return titleMatches && artistMatches;
+    });
+
+    if(!match){
+        console.warn("No iTunes match:", artist, "-", title);
+        return null;
+    }
+
+    return toSong(match);
 }

@@ -4,7 +4,7 @@ import express from 'express';
 import {songs} from './data/songs.js';
 import {getRecommendations} from './recommendations.js';
 import {getSimilarTracks} from './lastfm.js';
-import { lookupSong } from './itunes.js';
+import { lookupSong, findSong } from './itunes.js';
 
 const app = express();
 const PORT = 3001;
@@ -41,6 +41,15 @@ app.get("/api/debug/similar", async (req, res) =>{
 app.get("/api/debug/lookup/:id", async (req, res) => {
     try {
         const song = await lookupSong(req.params.id);
+        res.json(song);
+    } catch(error) {
+        res.status(502).json({error: error.message});
+    }
+});
+
+app.get("/api/debug/find", async (req, res) => {
+    try {
+        const song = await findSong(req.query.artist, req.query.title);
         res.json(song);
     } catch(error) {
         res.status(502).json({error: error.message});
