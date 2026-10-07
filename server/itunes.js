@@ -13,6 +13,11 @@ function normalizeArtist(artist){
     return artist.toLowerCase().replace(/\s+/g, " ").trim();
 }
 
+//one string that means "this recording", so a remaster and its original match
+export function songKey(artist, title){
+    return `${normalizeArtist(artist)}|${normalizeTitle(title)}`;
+}
+
 async function callItunes(baseUrl, params){
     //build url
     const url = new URL(baseUrl);

@@ -13,13 +13,22 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import {useState, useEffect, useRef} from 'react';
-const startingSong = {id:1, title: 
-"Don't Stop Believin'", artist: "Journey", album: "Evolution", genre: "Rock", year: 1981
-}; // temorary placeholder song data to display first somng while working on real time song data implimentation.
 import { saveGraphData, loadGraphData } from './storage/graphStorage.js';
 import SongDetails from './components/SongDetails.jsx';
 import SongLibrary from './components/SongLibrary.jsx';
 import Recommendations from './components/Recommendations.jsx';
+
+// The first song on the map. Real iTunes data until search lets the user pick their own.
+const startingSong = {
+  id: 160024096,
+  title: "Don't Stop Believin'",
+  artist: "Journey",
+  album: "The Essential Journey",
+  genre: "Rock",
+  year: 1981,
+  artwork: "https://is1-ssl.mzstatic.com/image/thumb/Features114/v4/f9/c9/49/f9c9495e-f91c-54c5-02ba-47d5db500f15/dj.nsdhasdt.jpg/100x100bb.jpg",
+  preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/16/b0/60/16b060d3-3d78-1527-2689-14b5f3e7055d/mzaf_1460444063579432623.plus.aac.p.m4a",
+};
 
 // React Flow adds a position and graph identity around our existing song data.
 const initialNodes = [
@@ -233,8 +242,23 @@ const [startingGraph] = useState(() => {
       setRecommendationsLoading(true);
 
       try{
-        const excludeIds = songNodes.map(node => node.data.id);
-        const response = await fetch(`/api/songs/${selectedSong.id}/recommendations?exclude=${excludeIds.join(',')}`); // builds the url: selectedSong.id = the id of the selected song, excludeIds.join(',') = a list of all the ids in the graph.
+        //the server needs each graph song's artist and title, not just its id,
+        //so it can drop duplicate recordings before spending an iTunes call on them.
+        const exclude = songNodes.map(node => ({
+          id: node.data.id,
+          artist: node.data.artist,
+          title: node.data.title,
+        }));
+
+        const response = await fetch('/api/recommendations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sourceId: selectedSong.id,
+            direction: 'closest', //step 4 lets the user choose this
+            exclude,
+          }),
+        });
 
         if(!response.ok){
           throw new Error(`Server responded with ${response.status}`);

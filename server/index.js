@@ -1,7 +1,6 @@
 // index.js: The main entry point for the RabbitHole API
 
 import express from 'express';
-import {songs} from './data/songs.js';
 import {getRecommendations} from './recommendations.js';
 import {getSimilarTracks} from './lastfm.js';
 import { lookupSong, findSong } from './itunes.js';
@@ -9,24 +8,12 @@ import { lookupSong, findSong } from './itunes.js';
 const app = express();
 const PORT = 3001;
 
+//lets routes read JSON request bodies as req.body
+app.use(express.json());
+
 
 app.get("/api/health", (req, res) => {
     res.json({status: "ok"});
-});
-
-app.get("/api/songs/:id/recommendations", (req, res) => {
-
-
-    const sourceId = Number(req.params.id);
-    const source = songs.find(song => song.id === sourceId);
-
-    if (!source) {
-        return res.status(404).json({ error: "Song not found" });
-    }
-
-    const excludeIds = req.query.exclude ? req.query.exclude.split(',').map(Number) : [];
-
-    res.json({recommendations: getRecommendations(source, songs, excludeIds)});
 });
 
 app.get("/api/debug/similar", async (req, res) =>{
@@ -53,6 +40,29 @@ app.get("/api/debug/find", async (req, res) => {
         res.json(song);
     } catch(error) {
         res.status(502).json({error: error.message});
+    }
+});
+
+app.post("/api/recommendations", async (req, res) => {
+    const { sourceId, direction, exclude } = req.body ?? {};
+
+    if(!sourceId){
+        return res.status(400).json({ error: "sourceId is required" });
+    }
+
+    try{
+        const source = await lookupSong(sourceId);
+        if(!source){
+            return res.status(404).json({ error: "Song not found" });
+        }
+
+        const candidates = await getSimilarTracks(source.artist, source.title);
+        const recommendations = await getRecommendations(source, candidates, { direction, exclude });
+
+        res.json({ recommendations });
+    } catch(error){
+        console.error(error);
+        res.status(502).json({ error: error.message });
     }
 });
 
