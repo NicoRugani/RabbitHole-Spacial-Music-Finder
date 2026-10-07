@@ -43,6 +43,12 @@ app.get("/api/debug/find", async (req, res) => {
     }
 });
 
+app.get("/api/directions", (req, res) => {
+    res.json({
+        directions: Object.entries(DIRECTIONS).map(([id, {label, description}])=> ({id, label, description})),
+    });
+});
+
 app.post("/api/recommendations", async (req, res) => {
     const { sourceId, direction, exclude } = req.body ?? {};
 

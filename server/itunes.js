@@ -5,11 +5,11 @@ const LOOKUP_URL = "https://itunes.apple.com/lookup";
 
 const EXTRAS = /\s*[(\[](?:feat\.|featuring|[^)\]]*remaster)[^)\]]*[)\]]/gi;
 
-function normalizeTitle(title){
+export function normalizeTitle(title){
     return title.toLowerCase().replace(EXTRAS, "").replace(/\s+/g, " ").trim();
 }
 
-function normalizeArtist(artist){
+export function normalizeArtist(artist){
     return artist.toLowerCase().replace(/\s+/g, " ").trim();
 }
 
