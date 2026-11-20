@@ -5,8 +5,6 @@ export default function SongLibrary({
     disabled,   
 }){
     return (
-
-       
         <aside className = "song-info">
             <h2>Library</h2>
             <ul className = "song-library-list">
