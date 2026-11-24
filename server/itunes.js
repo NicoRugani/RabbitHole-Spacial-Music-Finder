@@ -12,6 +12,17 @@ function toDisplayTitle(title){
     return title.replace(REMASTER_NOTE, "").replace(/\s+/g, " ").trim();
 }
 
+//Last.fm matches plain track names, so iTunes version notes have to come off first.
+const ANY_BRACKETED = /\s*[(\[][^)\]]*[)\]]/g;
+
+export function searchTitles(title){
+    const tidy = text => text.replace(/\s+/g, " ").trim();
+    //most faithful first; the bare version is only tried if that finds nothing
+    const stripped = tidy(title.replace(EXTRAS, ""));
+    const bare = tidy(title.replace(ANY_BRACKETED, ""));
+    return [...new Set([stripped, bare].filter(Boolean))];
+}
+
 export function normalizeTitle(title){
     return title.toLowerCase().replace(EXTRAS, "").replace(/\s+/g, " ").trim();
 }

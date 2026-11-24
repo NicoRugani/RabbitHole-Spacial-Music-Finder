@@ -3,7 +3,7 @@
 import express from 'express';
 import {getRecommendations, DIRECTIONS} from './recommendations.js';
 import {getSimilarTracks} from './lastfm.js';
-import { lookupSong, findSong } from './itunes.js';
+import { lookupSong, findSong, searchTitles } from './itunes.js';
 
 const app = express();
 const PORT = 3001;
@@ -11,6 +11,23 @@ const PORT = 3001;
 //lets routes read JSON request bodies as req.body
 app.use(express.json());
 
+
+//A title like "Is This Love (2017 Remaster)" finds nothing on Last.fm, so try
+//progressively plainer versions of it and keep the first that returns candidates.
+async function getCandidates(source){
+    for(const title of searchTitles(source.title)){
+        const tracks = await getSimilarTracks(source.artist, title);
+        if(tracks.length > 0) return tracks;
+    }
+    return [];
+}
+
+app.get("/", (req, res) => {
+    res.json({
+        service: "RabbitHole API",
+        endpoints: ["GET /api/health", "GET /api/directions", "POST /api/recommendations"],
+    });
+});
 
 app.get("/api/health", (req, res) => {
     res.json({status: "ok"});
@@ -62,7 +79,7 @@ app.post("/api/recommendations", async (req, res) => {
             return res.status(404).json({ error: "Song not found" });
         }
 
-        const candidates = await getSimilarTracks(source.artist, source.title);
+        const candidates = await getCandidates(source);
         const recommendations = await getRecommendations(source, candidates, { direction, exclude });
 
         res.json({ recommendations });
