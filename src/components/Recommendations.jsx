@@ -14,7 +14,7 @@ export default function Recommendations({ songs, loading, error, onAddToGraph })
           ) : (
             songs.map(song => (
               <li key={song.id}>
-                <span>{song.title} by {song.artist} ({song.year})</span>
+                <span>{song.displayTitle ?? song.title} by {song.artist} ({song.year})</span>
                 <button className="add-to-graph-button" onClick={() => onAddToGraph(song)}>Add to Graph</button>
               </li>
             ))

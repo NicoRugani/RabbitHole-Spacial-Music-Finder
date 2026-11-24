@@ -20,7 +20,7 @@ export default function SongLibrary({
                                 }
                                 onClick = {() => onSelect(node.id)}
                             >
-                                {node.data.title} by {node.data.artist}
+                                {node.data.displayTitle ?? node.data.title} by {node.data.artist}
                             </button>
                         </li>
                     ))

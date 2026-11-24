@@ -5,6 +5,13 @@ const LOOKUP_URL = "https://itunes.apple.com/lookup";
 
 const EXTRAS = /\s*[(\[](?:feat\.|featuring|[^)\]]*remaster)[^)\]]*[)\]]/gi;
 
+//remaster notes are noise on screen. feat. credits stay, they name who is on the track.
+const REMASTER_NOTE = /\s*[(\[][^)\]]*remaster[^)\]]*[)\]]/gi;
+
+function toDisplayTitle(title){
+    return title.replace(REMASTER_NOTE, "").replace(/\s+/g, " ").trim();
+}
+
 export function normalizeTitle(title){
     return title.toLowerCase().replace(EXTRAS, "").replace(/\s+/g, " ").trim();
 }
@@ -41,6 +48,7 @@ function toSong(itunesData){
     return {
         id: itunesData.trackId,
         title: itunesData.trackName,
+        displayTitle: toDisplayTitle(itunesData.trackName),
         artist: itunesData.artistName,
         album: itunesData.collectionName,
         genre: itunesData.primaryGenreName,

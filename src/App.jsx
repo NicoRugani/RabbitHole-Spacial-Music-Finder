@@ -46,7 +46,7 @@ function SongNode({ data }) {
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
       <span className="song-genre">{data.genre}</span>
-      <h2>{data.title}</h2>
+      <h2>{data.displayTitle ?? data.title}</h2>
       <p>{data.artist}</p>
       <p className="song-album">{data.album} · {data.year}</p>
     </article>
@@ -292,7 +292,7 @@ const [startingGraph] = useState(() => {
         {loadError && <p role = "alert">{loadError}</p>}
         {saveError && <p role = "alert">{saveError}</p>}
         <h1>RabbitHole<span> / music map</span></h1>
-        <span className="demo-label">Sample songs</span>
+        <span className="demo-label">Powered by Last.fm and iTunes</span>
         <button onClick={handleStartOver}>Start Over</button>
       </header>
       <div className="workspace">
