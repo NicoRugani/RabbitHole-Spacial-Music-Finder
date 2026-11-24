@@ -1,7 +1,7 @@
 // index.js: The main entry point for the RabbitHole API
 
 import express from 'express';
-import {getRecommendations} from './recommendations.js';
+import {getRecommendations, DIRECTIONS} from './recommendations.js';
 import {getSimilarTracks} from './lastfm.js';
 import { lookupSong, findSong } from './itunes.js';
 

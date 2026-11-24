@@ -98,6 +98,30 @@ button { font: inherit; }
   margin: 0.25rem 0;
 }
 
+.direction-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  color: #acbad2;
+  font-size: 0.875rem;
+}
+
+.direction-picker select {
+  padding: 0.5rem;
+  border: 1px solid #465a7d;
+  border-radius: 8px;
+  color: #edf3ff;
+  background: #18263d;
+  font: inherit;
+  cursor: pointer;
+}
+
+.direction-description {
+  color: #acbad2;
+  font-size: 0.875rem;
+}
+
 .song-actions {
   display: flex;
   flex-wrap: wrap;

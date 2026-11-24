@@ -13,7 +13,6 @@ export const DIRECTIONS = {
 
 export async function getRecommendations(source, candidates, { direction = "closest", exclude = [] } = {}){
     const graphArtists = new Set(exclude.map(song => normalizeArtist(song.artist)));
-    exclude.forEach(song => normalizeArtist(song.artist));
     const excludedIds = new Set(exclude.map(song => song.id));
     const excludedKeys = new Set(exclude.map(song => songKey(song.artist, song.title)));
     excludedKeys.add(songKey(source.artist, source.title));
@@ -49,18 +48,19 @@ function popularity(playcount){
 }
 
 function scoreCandidate(candidate, weights, sourceArtist, graphArtists){
-    const artsit = normalizeArtist(candidate.artist);
-    const repeats = artsit === sourceArtist || graphArtists.has(artsit) ? 1 : 0;
+    const artist = normalizeArtist(candidate.artist);
+    const repeats = artist === sourceArtist || graphArtists.has(artist) ? 1 : 0;
 
-    const totalScore = (weights.match * (candidate.match || 0)) 
-                     + (weights.obscurity * (candidate.obscurity || 0)) 
-                     + (weights.artistRepeat * repeats);
+    //artistRepeat is a penalty, so it is subtracted
+    const totalScore = (weights.match * (candidate.matchScore || 0))
+                     + (weights.obscurity * (1 - popularity(candidate.playcount)))
+                     - (weights.artistRepeat * repeats);
     return totalScore;
 }
 
 export function rankCandidates(source, candidates, direction, graphArtists){
     const weights = DIRECTIONS[direction] ?? DIRECTIONS.closest;
-    const sourceArtist = normalize(source.artists);
+    const sourceArtist = normalizeArtist(source.artist);
 
     //map each candidate to {candidate, score}
     const scoredCandidates = candidates.map(candidate => ({

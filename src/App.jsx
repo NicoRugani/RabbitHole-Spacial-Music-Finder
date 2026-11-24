@@ -121,6 +121,16 @@ const [startingGraph] = useState(() => {
   const [recommendations, setRecommendations] = useState([]);
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
   const[recommendationsError, setRecommendationsError] = useState(null);
+  const [directions, setDirections] = useState([]);
+  const [direction, setDirection] = useState("closest");
+
+  //the server owns the direction list, so load it once when the app mounts.
+  useEffect(() => {
+    fetch('/api/directions')
+      .then(response => response.json())
+      .then(data => setDirections(data.directions))
+      .catch(error => console.error(error));
+  }, []);
 
   useEffect(() => {
     if(loadError || songNodes.some(node => node.dragging)){
@@ -255,7 +265,7 @@ const [startingGraph] = useState(() => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sourceId: selectedSong.id,
-            direction: 'closest', //step 4 lets the user choose this
+            direction,
             exclude,
           }),
         });
@@ -318,6 +328,9 @@ const [startingGraph] = useState(() => {
         <div className="sidebar">
           <SongDetails
             song={selectedSong}
+            directions={directions}
+            direction={direction}
+            onDirectionChange={setDirection}
             onDeselect={handleDeselect}
             onFindRecommendations={handleFindRecommendations}
           />
