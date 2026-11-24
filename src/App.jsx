@@ -41,14 +41,23 @@ const initialNodes = [
 ];
 
 function SongNode({ data }) {
+  const title = data.displayTitle ?? data.title;
+  const album = `${data.album} · ${data.year}`;
+
+  // Longer titles drop a type size so every node can stay the same size.
+  const titleSize = title.length > 28 ? 'xs' : title.length > 18 ? 'sm' : 'md';
+
   return (
     <article className="song-node">
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
-      <span className="song-genre">{data.genre}</span>
-      <h2>{data.displayTitle ?? data.title}</h2>
-      <p>{data.artist}</p>
-      <p className="song-album">{data.album} · {data.year}</p>
+      {/* A square this size fits inside the circle, so no line can poke out of it. */}
+      <div className="song-node-content">
+        <span className="song-genre" title={data.genre}>{data.genre}</span>
+        <h2 className={`song-title-${titleSize}`} title={title}>{title}</h2>
+        <p className="song-artist" title={data.artist}>{data.artist}</p>
+        <p className="song-album" title={album}>{album}</p>
+      </div>
     </article>
   );
 }

@@ -58,23 +58,60 @@ button { font: inherit; }
 .song-node {
   width: 200px;
   height: 200px;
-  padding: 1.25rem;
   border: 1px solid #6d96e8;
-  border-radius: 80%;
+  border-radius: 50%;
   background: #14213a;
   box-shadow: 0 0 40px #4a7eee24;
   text-align: center;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+/* 70% of the diameter is the largest square that fits inside the circle. */
+.song-node-content {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .song-genre { color: #a9c6ff; font-size: 0.875rem; }
-.song-node h2 { margin: 0.5rem 0 0.25rem; font-size: 1.25rem; }
 .song-node p { margin: 0; }
-.song-node .song-album { margin-top: 0.75rem; color: #acbad2; font-size: 0.875rem; }
+
+/* One line each, cut with an ellipsis rather than spilling past the edge. */
+.song-node .song-genre,
+.song-node .song-artist,
+.song-node .song-album {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-node .song-genre { font-size: 0.75rem; }
+.song-node .song-artist { font-size: 0.9rem; }
+.song-node .song-album { margin-top: 0.4rem; color: #acbad2; font-size: 0.75rem; }
+
+/* Titles get two lines before they are cut. */
+.song-node h2 {
+  margin: 0.2rem 0 0.1rem;
+  max-width: 100%;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.song-node h2.song-title-md { font-size: 1.15rem; }
+.song-node h2.song-title-sm { font-size: 1rem; }
+.song-node h2.song-title-xs { font-size: 0.85rem; }
 .react-flow__node.selected .song-node { border-color: #d4e3ff; box-shadow: 0 0 0 2px #7da9ff, 0 0 40px #4a7eee36; }
-.song-node:hover { border-color: #7da9ff; box-shadow: 0 0 60px #4a7eee36; scale: 1.05; transition: all 0.2s ease-in-out; }
+.song-node:hover { border-color: #7da9ff; box-shadow: 0 0 60px #4a7eee36; scale: 1.05; }
 .react-flow__node:focus-visible { outline: 2px solid #d4e3ff; outline-offset: 5px; border-radius: 50px; }
 
 .song-info {
